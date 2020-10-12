@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+    android:background="@drawable/bckgrndpic"
+    tools:context=".Menu" >
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="138dp"
+        android:layout_marginTop="30dp"
+
+        android:layout_marginEnd="138dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:text="PORT:"
+            android:textColor="#3c3c3c"
+            android:textSize="36sp" />
+
+        <EditText
+            android:id="@+id/set_port"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autofillHints=""
+            android:digits="0123456789"
+            android:ems="10"
+            android:imeOptions="actionDone"
+            android:inputType="number"
+            android:textSize="30sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.577"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="50dp"
+            android:layout_height="60dp"
+            android:text="IP:"
+            android:textColor="#3c3c3c"
+            android:textSize="36sp" />
+
+        <EditText
+            android:id="@+id/set_ip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autofillHints=""
+            android:digits="0123456789."
+            android:ems="10"
+            android:imeOptions="actionDone"
+            android:inputType="number"
+            android:textSize="30sp" />
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:onClick="mainActivityButton"
+        android:background="@drawable/menu_button"
+        app:srcCompat="@drawable/ic_baseline_arrow_back_24"
+        tools:layout_editor_absoluteX="655dp"
+        tools:layout_editor_absoluteY="87dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <Button
+        android:id="@+id/connect_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="271dp"
+        android:onClick="connectClick"
+        android:text=" CONNECT "
+        android:padding="5dp"
+        android:textSize="36sp"
+        android:textColor="#ffffff"
+        android:background="@drawable/connect_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
