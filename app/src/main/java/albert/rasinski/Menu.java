@@ -87,7 +87,6 @@ public class Menu extends AppCompatActivity {
         }else{
             intent.putExtra("ip", setTextIP.getText().toString());
         }
-        Log.d("tag123","test " + setTextPort.getText().toString());
         if (setTextPort.getText().toString().matches("")){
             intent.putExtra("port", port);
         }else{

@@ -18,8 +18,9 @@ public class MainActivity extends AppCompatActivity {
     private int heightPx;
     private int widthPx;
     private Joystick joystick;
-    private boolean onOffClient;
+    private DrawCamera drawCamera;
     private IpPort ipPort;
+    private Client client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         joystick = (Joystick) findViewById(R.id.joystickView);
+        drawCamera = new DrawCamera(this);
 
         WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
@@ -53,22 +55,15 @@ public class MainActivity extends AppCompatActivity {
         heightPx = realSize.x;
         widthPx = realSize.y;
 
-        onOffClient = false;
-
         ipPort = new IpPort(this);
         Bundle extras = getIntent().getExtras();
 
         if (extras != null){
             ipPort.setIp(extras.getString("ip"));
             ipPort.setPort(extras.getInt("port"));
-            onOffClient = extras.getBoolean("onOffClient");
             ipPort.save(this);
         }
-
-        if (onOffClient){
-            Client client = (Client) new Client(joystick, ipPort.getIp(), ipPort.getPort());
-            client.execute();
-        }
+        Log.d("testc","nowe");
     }
 
     @Override
@@ -107,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         if (event.getAction() == MotionEvent.ACTION_UP){
             joystick.resetJoystick();
         }
+        drawCamera.invalidate();
         joystick.invalidate();
 
         return true;
@@ -117,5 +113,12 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("ip", ipPort.getIp());
         intent.putExtra("port", ipPort.getPort());
         startActivity(intent);
+    }
+
+    public void connectButton(View view){
+        client = new Client(joystick, drawCamera, ipPort.getIp(), ipPort.getPort());
+        Log.d("aa","ip: " + ipPort.getIp());
+        Log.d("aa","port: " + ipPort.getPort());
+        client.execute();
     }
 }

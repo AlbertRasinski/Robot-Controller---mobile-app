@@ -1,21 +1,30 @@
 package albert.rasinski;
 
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Log;
+import android.view.View;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 
 class Client extends AsyncTask<Void, Void, Void> {
+
+
     private Joystick joystick;
     private boolean running = true;
     private String ip;
     private int port;
+    private DrawCamera drawCamera;
 
-    Client(Joystick joystick, String ip, int port){
+    Client(Joystick joystick, DrawCamera drawCamera, String ip, int port){
         this.joystick = joystick;
+        this.drawCamera = drawCamera;
         this.ip = ip;
         this.port = port;
     }
@@ -23,49 +32,52 @@ class Client extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... Void) {
         Socket socket = null;
-        DataInputStream dataInputStream = null;
-        DataOutputStream dataOutputStream = null;
+
+        InputStream inputStream = null;
         BufferedInputStream bufferedInputStream = null;
-        BufferedOutputStream bufferedOutputStream = null;
 
         try {
-            socket = new Socket(ip,port);
+            socket = new Socket(ip, port);
+            inputStream = socket.getInputStream();
+            bufferedInputStream = new BufferedInputStream(inputStream);
 
-            dataInputStream = new DataInputStream(socket.getInputStream());
-            dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            bufferedInputStream = new BufferedInputStream(dataInputStream);
-            bufferedOutputStream = new BufferedOutputStream(dataOutputStream);
+            //while(running){
+                byte[] numberOfBytesCamera = new byte[4];
+                bufferedInputStream.read(numberOfBytesCamera,0,4);
+                int numBytesCamera = ByteBuffer.wrap(numberOfBytesCamera).asIntBuffer().get();
+
+                byte[] imageArrayOfBytes = new byte[numBytesCamera];
+                bufferedInputStream.read(imageArrayOfBytes,0, numBytesCamera);
 
 
-            while(running){
-                bufferedOutputStream.write(joystick.getMotorLeft());
-                bufferedOutputStream.write(joystick.getMotorRight());
-                bufferedOutputStream.flush();
-                Thread.sleep(1000);
 
-            }
-        } catch (IOException | InterruptedException e) {
+                drawCamera.bitmap = BitmapFactory.decodeByteArray(imageArrayOfBytes,0, numBytesCamera);
+
+                //}
+                //Thread.sleep(100);
+                    //while(true){
+                    /*bufferedOutputStream.write(joystick.getMotorLeft());
+                    bufferedOutputStream.write(joystick.getMotorRight());
+                    bufferedOutputStream.flush();*/
+            //}
+        } catch (IOException e) {
             e.printStackTrace();
             try {
-                if (socket != null) {
+                if (socket != null){
                     socket.close();
                 }
-                if (dataInputStream != null) {
-                    dataInputStream.close();
+                if (inputStream != null){
+                    inputStream.close();
                 }
-                if (dataOutputStream != null) {
-                    dataOutputStream.close();
-                }
-                if (bufferedInputStream != null) {
+                /*if (bufferedInputStream != null){
                     bufferedInputStream.close();
-                }
-                if (bufferedOutputStream != null) {
-                    bufferedOutputStream.close();
-                }
+                }*/
+
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
+
         return null;
     }
 

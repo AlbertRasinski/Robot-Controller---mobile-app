@@ -8,6 +8,11 @@
     android:background="@drawable/bckgrndpic"
     tools:context=".MainActivity">
 
+    <albert.rasinski.DrawCamera
+        android:id="@+id/drawCamera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <albert.rasinski.Joystick
         android:id="@+id/joystickView"
         android:layout_width="870px"
@@ -34,5 +39,18 @@
         tools:layout_editor_absoluteY="87dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageButton
+        android:id="@+id/imageButton2"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/menu_button"
+        android:onClick="connectButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/connect" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
