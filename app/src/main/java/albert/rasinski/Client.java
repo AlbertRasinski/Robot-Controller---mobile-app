@@ -1,11 +1,7 @@
 package albert.rasinski;
 
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.util.Log;
-import android.view.View;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -13,11 +9,8 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 
-class Client extends AsyncTask<Void, Void, Void> {
-
-
+class Client implements Runnable{
     private Joystick joystick;
-    private boolean running = true;
     private String ip;
     private int port;
     private DrawCamera drawCamera;
@@ -30,38 +23,41 @@ class Client extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(Void... Void) {
+    public void run() {
         Socket socket = null;
-
         InputStream inputStream = null;
-        BufferedInputStream bufferedInputStream = null;
+
+        DataOutputStream dataOutputStream = null;
+        BufferedOutputStream bufferedOutputStream = null;
 
         try {
             socket = new Socket(ip, port);
             inputStream = socket.getInputStream();
-            bufferedInputStream = new BufferedInputStream(inputStream);
+            dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            bufferedOutputStream = new BufferedOutputStream(dataOutputStream);
 
-            //while(running){
-                byte[] numberOfBytesCamera = new byte[4];
-                bufferedInputStream.read(numberOfBytesCamera,0,4);
-                int numBytesCamera = ByteBuffer.wrap(numberOfBytesCamera).asIntBuffer().get();
+            while(true) {
+                bufferedOutputStream.write(joystick.getMotorLeft());
+                bufferedOutputStream.write(joystick.getMotorRight());
+                bufferedOutputStream.flush();
 
-                byte[] imageArrayOfBytes = new byte[numBytesCamera];
-                bufferedInputStream.read(imageArrayOfBytes,0, numBytesCamera);
+                byte[] numberOfBytesArr = new byte[4];
+                for (int i = 0; i < 4; ++i){
+                    numberOfBytesArr[i] = (byte)inputStream.read();
+                }
+                int numberOfBytes = ByteBuffer.wrap(numberOfBytesArr).asIntBuffer().get();
 
+                byte[] cameraByteArray = new byte[numberOfBytes];
+                for (int j = 0; j < numberOfBytes; ++j){
+                    cameraByteArray[j] = (byte)inputStream.read();
+                }
 
-
-                drawCamera.bitmap = BitmapFactory.decodeByteArray(imageArrayOfBytes,0, numBytesCamera);
-
-                //}
-                //Thread.sleep(100);
-                    //while(true){
-                    /*bufferedOutputStream.write(joystick.getMotorLeft());
-                    bufferedOutputStream.write(joystick.getMotorRight());
-                    bufferedOutputStream.flush();*/
-            //}
+                drawCamera.bitmap = BitmapFactory.decodeByteArray(cameraByteArray, 0, numberOfBytes);
+                drawCamera.setReadiness();
+            }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
             try {
                 if (socket != null){
                     socket.close();
@@ -69,22 +65,15 @@ class Client extends AsyncTask<Void, Void, Void> {
                 if (inputStream != null){
                     inputStream.close();
                 }
-                /*if (bufferedInputStream != null){
-                    bufferedInputStream.close();
-                }*/
-
-            } catch (IOException ex) {
-                ex.printStackTrace();
+                if (dataOutputStream != null){
+                    dataOutputStream.close();
+                }
+                if (bufferedOutputStream != null){
+                    bufferedOutputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
-
-        return null;
-    }
-
-    @Override
-    protected void onCancelled() {
-        running = false;
-
-        super.onCancelled();
     }
 }

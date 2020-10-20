@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
@@ -43,10 +42,11 @@ public class MainActivity extends AppCompatActivity {
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
         joystick = (Joystick) findViewById(R.id.joystickView);
-        drawCamera = new DrawCamera(this);
+        drawCamera = findViewById(R.id.cameraView);
 
         WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
@@ -63,8 +63,10 @@ public class MainActivity extends AppCompatActivity {
             ipPort.setPort(extras.getInt("port"));
             ipPort.save(this);
         }
-        Log.d("testc","nowe");
+
     }
+
+
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus){
@@ -102,8 +104,8 @@ public class MainActivity extends AppCompatActivity {
         if (event.getAction() == MotionEvent.ACTION_UP){
             joystick.resetJoystick();
         }
-        drawCamera.invalidate();
-        joystick.invalidate();
+
+        joystick.postInvalidate();
 
         return true;
     }
@@ -116,9 +118,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void connectButton(View view){
-        client = new Client(joystick, drawCamera, ipPort.getIp(), ipPort.getPort());
-        Log.d("aa","ip: " + ipPort.getIp());
-        Log.d("aa","port: " + ipPort.getPort());
-        client.execute();
+        Thread threadClient = new Thread(client = new Client(joystick, drawCamera, ipPort.getIp(), ipPort.getPort()));
+        threadClient.start();
+
+        Thread threadDrawing = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true){
+                    if (drawCamera.readyToDraw()){
+                        drawCamera.postInvalidate();
+                    }
+                }
+            }
+        });
+        threadDrawing.start();
     }
 }
