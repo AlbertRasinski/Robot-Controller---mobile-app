@@ -13,11 +13,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class DrawCamera extends androidx.appcompat.widget.AppCompatImageView{
-    public static Bitmap bitmap;
-    private static boolean readyToSend;
-    private static int heightPx;
-    private static int widthPx;
-    final static double ratio = 960.0 / 540.0;
+    public Bitmap bitmap;
+    private boolean readyToSend;
+    private int heightPx;
+    private int widthPx;
+    final double ratio = 960.0 / 540.0;
 
     public DrawCamera(@NonNull Context context) {
         super(context);
@@ -34,7 +34,7 @@ public class DrawCamera extends androidx.appcompat.widget.AppCompatImageView{
         init(context);
     }
 
-    private static  void init(Context context) {
+    private void init(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         Point realSize = new Point();
@@ -46,7 +46,7 @@ public class DrawCamera extends androidx.appcompat.widget.AppCompatImageView{
         readyToSend = false;
     }
 
-    public static boolean readyToDraw(){
+    public boolean readyToDraw(){
         if (readyToSend){
             readyToSend = false;
             return true;
@@ -55,7 +55,7 @@ public class DrawCamera extends androidx.appcompat.widget.AppCompatImageView{
         }
     }
 
-    public static void setReadiness(){
+    public void setReadiness(){
         readyToSend = true;
     }
 

@@ -4,18 +4,18 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class IpPort{
-    private static String ip;
-    private static int port;
+    private String ip;
+    private int port;
 
-    private static final String SHARED_PREFS = "saved_ip_port_data";
+    private final String SHARED_PREFS = "saved_ip_port_data";
     private static final String IP_NAME = "ip";
-    private static final String PORT_NAME = "port";
+    private final String PORT_NAME = "port";
 
     public IpPort(Context context){
         load(context);
     }
 
-    public static void save(Context context){
+    public void save(Context context){
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS,Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -24,17 +24,17 @@ public class IpPort{
         editor.commit();
     }
 
-    public static void load(Context context){
+    public void load(Context context){
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS,Context.MODE_PRIVATE);
 
         ip = sharedPreferences.getString(IP_NAME, "No data");
         port = sharedPreferences.getInt(PORT_NAME,4831);
     }
 
-    public static String getIp(){
+    public String getIp(){
         return ip;
     }
-    public static int getPort(){
+    public int getPort(){
         return port;
     }
 

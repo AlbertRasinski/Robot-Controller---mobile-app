@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public void onWindowFocusChanged(boolean hasFocus){
         super.onWindowFocusChanged(hasFocus);
@@ -81,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -110,12 +111,14 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+
     public void menuButton(View view){
         Intent intent = new Intent(this, Menu.class);
         intent.putExtra("ip", ipPort.getIp());
         intent.putExtra("port", ipPort.getPort());
         startActivity(intent);
     }
+
 
     public void connectButton(View view){
         Thread threadClient = new Thread(client = new Client(joystick, drawCamera, ipPort.getIp(), ipPort.getPort()));

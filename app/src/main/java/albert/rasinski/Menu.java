@@ -74,24 +74,24 @@ public class Menu extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("ip", ip);
         intent.putExtra("port", port);
-        intent.putExtra("onOffClient",false);
         startActivity(intent);
     }
 
     public void connectClick(View view){
         Intent intent = new Intent(this, MainActivity.class);
+
         if (setTextIP.getText().toString().matches("")){
             intent.putExtra("ip", ip);
         }else{
             intent.putExtra("ip", setTextIP.getText().toString());
         }
+
         if (setTextPort.getText().toString().matches("")){
             intent.putExtra("port", port);
         }else{
             intent.putExtra("port", Integer.parseInt(setTextPort.getText().toString()));
         }
 
-        intent.putExtra("onOffClient",true);
         startActivity(intent);
     }
 }
