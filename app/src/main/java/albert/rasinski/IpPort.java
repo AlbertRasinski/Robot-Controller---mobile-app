@@ -8,7 +8,7 @@ public class IpPort{
     private int port;
 
     private final String SHARED_PREFS = "saved_ip_port_data";
-    private static final String IP_NAME = "ip";
+    private final String IP_NAME = "ip";
     private final String PORT_NAME = "port";
 
     public IpPort(Context context){

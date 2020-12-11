@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 
 public class MainActivity extends AppCompatActivity {
     private View decorView;
@@ -20,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
     private DrawCamera drawCamera;
     private IpPort ipPort;
     private Client client;
+    private ImageButton menuButton;
+    private ImageButton connectButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,22 @@ public class MainActivity extends AppCompatActivity {
 
         joystick = (Joystick) findViewById(R.id.joystickView);
         drawCamera = findViewById(R.id.cameraView);
+
+        menuButton = findViewById(R.id.menuButton);
+        menuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                menuButtonOnClick(v);
+            }
+        });
+
+        connectButton = findViewById(R.id.connectButton);
+        connectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                connectButtonOnClick(v);
+            }
+        });
 
         WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
@@ -112,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void menuButton(View view){
+    private void menuButtonOnClick(View view){
         Intent intent = new Intent(this, Menu.class);
         intent.putExtra("ip", ipPort.getIp());
         intent.putExtra("port", ipPort.getPort());
@@ -120,20 +139,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void connectButton(View view){
-        Thread threadClient = new Thread(client = new Client(joystick, drawCamera, ipPort.getIp(), ipPort.getPort()));
-        threadClient.start();
-
-        Thread threadDrawing = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(true){
-                    if (drawCamera.readyToDraw()){
-                        drawCamera.postInvalidate();
-                    }
-                }
-            }
-        });
-        threadDrawing.start();
+    private void connectButtonOnClick(View view){
+        Thread t1;
+        Thread t2;
+        t1 = new Thread(client = new Client(joystick, drawCamera, ipPort.getIp(), ipPort.getPort()));
+        t2 = new Thread(drawCamera);
+        t1.start();
+        t2.start();
     }
 }

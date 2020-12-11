@@ -2,7 +2,6 @@ package albert.rasinski;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.util.AttributeSet;
@@ -11,13 +10,15 @@ import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
 
-public class DrawCamera extends androidx.appcompat.widget.AppCompatImageView{
+//androidx.appcompat.widget.AppCompatImageView
+public class DrawCamera extends AppCompatImageView implements Runnable{
     public Bitmap bitmap;
-    private boolean readyToSend;
+    private boolean readyToDraw;
     private int heightPx;
     private int widthPx;
-    final double ratio = 960.0 / 540.0;
+    private final double ratio = 960.0 / 540.0;
 
     public DrawCamera(@NonNull Context context) {
         super(context);
@@ -43,20 +44,11 @@ public class DrawCamera extends androidx.appcompat.widget.AppCompatImageView{
         widthPx = realSize.y;
         Bitmap.Config config = Bitmap.Config.ARGB_8888;
         bitmap = Bitmap.createBitmap(widthPx, heightPx, config);
-        readyToSend = false;
-    }
-
-    public boolean readyToDraw(){
-        if (readyToSend){
-            readyToSend = false;
-            return true;
-        }else{
-            return false;
-        }
+        readyToDraw = false;
     }
 
     public void setReadiness(){
-        readyToSend = true;
+        readyToDraw = true;
     }
 
     @Override
@@ -65,5 +57,20 @@ public class DrawCamera extends androidx.appcompat.widget.AppCompatImageView{
 
         bitmap = Bitmap.createScaledBitmap(bitmap,(int)(ratio * (double) widthPx), widthPx, true);
         canvas.drawBitmap(bitmap,0,0,null);
+    }
+
+    @Override
+    public void run() {
+        while(true){
+            if (readyToDraw){
+                readyToDraw = false;
+                postInvalidate();
+            }
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

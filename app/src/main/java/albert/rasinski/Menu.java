@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 public class Menu extends AppCompatActivity {
     private View decorView;
@@ -13,6 +15,8 @@ public class Menu extends AppCompatActivity {
     private int port;
     private EditText setTextIP;
     private EditText setTextPort;
+    private ImageButton backToMainActivityButton;
+    private Button connectButtonMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +45,25 @@ public class Menu extends AppCompatActivity {
         }
         setTextIP = (EditText) findViewById(R.id.set_ip);
         setTextIP.setHint(ip);
+
         setTextPort = (EditText) findViewById(R.id.set_port);
         setTextPort.setHint("" + port);
+
+        backToMainActivityButton = findViewById(R.id.backButton);
+        backToMainActivityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainActivityOnClick(v);
+            }
+        });
+
+        connectButtonMenu = findViewById(R.id.connectMenu);
+        connectButtonMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                connectMenuOnClick(v);
+            }
+        });
     }
 
     @Override
@@ -70,14 +91,14 @@ public class Menu extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
-    public void mainActivityButton(View view){
+    public void mainActivityOnClick(View view){
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("ip", ip);
         intent.putExtra("port", port);
         startActivity(intent);
     }
 
-    public void connectClick(View view){
+    public void connectMenuOnClick(View view){
         Intent intent = new Intent(this, MainActivity.class);
 
         if (setTextIP.getText().toString().matches("")){
